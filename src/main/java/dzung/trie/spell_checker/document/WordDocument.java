@@ -7,11 +7,11 @@ import org.springframework.data.annotation.Id;
 
 import java.util.List;
 
-@org.springframework.data.mongodb.core.mapping.Document(collection = "documents")
+@org.springframework.data.mongodb.core.mapping.Document(collection = "word_documents")
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class WordDocument {
+public class WordDocument implements Document{
     @Id
     private String id;
     private String key;

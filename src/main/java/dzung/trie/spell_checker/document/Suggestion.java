@@ -8,11 +8,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Suggestion implements Comparable<Suggestion> {
-    private String value;
+    private String suggestion;
     private int score;
 
     public Suggestion(String value) {
-        this.value = value;
+        this.suggestion = value;
         this.score = 0;
     }
 
@@ -30,9 +30,9 @@ public class Suggestion implements Comparable<Suggestion> {
     public int compareTo(Suggestion o) {
         int cmpInt = Integer.compare(this.score, o.score);
         if (cmpInt == 0) {
-            int cmpLen = Integer.compare(this.value.length(), o.value.length());
+            int cmpLen = Integer.compare(this.suggestion.length(), o.suggestion.length());
             if (cmpLen == 0)
-                return -this.value.compareTo(o.value);
+                return -this.suggestion.compareTo(o.suggestion);
             return -cmpLen;
         }
         return -cmpInt;

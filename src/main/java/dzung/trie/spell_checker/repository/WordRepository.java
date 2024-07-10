@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SuggestionRepository extends MongoRepository<WordDocument, String> {
+public interface WordRepository extends MongoRepository<WordDocument, String> {
     @Query("{'key' : ?0}")
     List<Document> findByKey(String key);
 }
