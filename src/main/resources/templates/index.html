@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>HomePage</title>
+    <link rel="stylesheet" href="/css/style.css"/>
+</head>
+
+<body class="homePage">
+<div class="header">
+    <h4>Author: Dũng Nguyễn Deverloper</h4>
+    <b>Dictionary Application</b>
+</div>
+
+<div class="content">
+    <div class="content-header">
+        <h2>Spell Checker</h2>
+    </div>
+    <div class="content-body">
+        <label>Enter your word:</label>
+        <input type="text" id="word" name="message" required/>
+        <button type="submit" id="submit">Check</button>
+    </div>
+
+    <div class="content-result">
+        <b class="padding-right">Result:</b>
+        <label id="answer"></label>
+    </div>
+    <div class="content-suggestions">
+        <div id="content-suggestions"></div>
+    </div>
+</div>
+
+<script>
+    let latestRequestTimestamp = 0;
+    document.getElementById("word").addEventListener("input", function () {
+        const query = this.value.trim();
+        const contentDiv = document.getElementById("content-suggestions");
+        contentDiv.innerHTML = "";
+
+        if (query === "") return;
+
+        const currentRequestTimestamp = Date.now();
+        latestRequestTimestamp = currentRequestTimestamp;
+
+        fetch(`http://192.168.1.26:8080/spellcheck?word=${query}`)
+            .then((response) => response.json())
+            .then((data) => {
+                if (latestRequestTimestamp !== currentRequestTimestamp) return;         // make sure the response is for the latest request.
+                if (data.length === 0) return;
+
+                const suggestContent = document.createElement('div');
+                suggestContent.className = 'suggest-content';
+                suggestContent.innerHTML = "<b>Suggest: </b>";
+
+                const suggestions = data.map(word => `<div class='suggest-content'>+ ${word}</div>`).join('');
+                suggestContent.innerHTML += suggestions;
+
+                contentDiv.appendChild(suggestContent);
+            })
+            .catch((error) => console.error('Error fetching spellcheck suggestions:', error));
+    });
+
+
+    document.getElementById("submit").addEventListener("click", function (e) {
+        e.preventDefault();
+        var query = document.getElementsByName("message").item(0).value;
+        if (query === "") {
+            document.getElementById("answer").innerHTML = "Please enter your word!";
+            return;
+        }
+        fetch("http://192.168.1.26:8080/azure?message=" + query, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({message: query})
+        })
+            .then((response) => response.text())
+            .then((data) => {
+                document.getElementById("answer").innerHTML = data;
+            });
+    });
+</script>
+</body>
+</html>
