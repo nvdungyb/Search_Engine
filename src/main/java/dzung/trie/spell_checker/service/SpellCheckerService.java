@@ -12,11 +12,8 @@ import dzung.trie.spell_checker.trie.TrieWordSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.print.Doc;
-import javax.swing.text.html.Option;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,59 +24,59 @@ public class SpellCheckerService {
     private WordRepository wordRepo;
     @Autowired
     private QuoteRepository quoteRepo;
-    @Autowired
-    private TrieQuoteSearch trieQuote;
-    @Autowired
-    private TrieWordSearch trieWord;
 
-//    public List<String> suggest(String word) {
-//        List<String> suggests = new ArrayList<>();
-//        suggests.addAll(trieWord.getSuggest(word));
-//        suggests.addAll(trieQuote.getSuggest(word));
-//
-//        return suggests;
-//    }
 
     public WordDocument wordSuggest(String word) {
-        WordDocument ans = null;
         String[] keys = word.split("\\s+");
         String key = keys[keys.length - 1];
 
-        for (int i = 0; i < key.length(); i++) {
+        for (int i = key.length() - 1; i >= 0; i--) {
             WordDocument doc = wordRepo.findByKey(key.substring(0, i + 1));
             if (doc != null)
-                ans = doc;
+                return doc;
         }
-        return ans;
+        return null;
     }
 
-    public List<QuoteDocument> quoteSuggest(String word) {
-        List<QuoteDocument> ans = null;
+    /**
+     * I don't know why quoteRepo return list of QuoteDocument, the quote_collection in mongodb contains duplicate keys.
+     *
+     * @param word
+     * @return a QuoteDocument
+     */
+    public QuoteDocument quoteSuggest(String word) {
         String[] keys = word.split("\\s+");
 
         StringBuilder builder = new StringBuilder();
-        for (String x : keys) {
-            builder.append(x).append(" ");
-            String key = builder.toString().trim();
+        for (int i = 0; i < keys.length; i++) {
+            builder.append(keys[i]).append(" ");
+        }
 
+        int len = builder.length();
+        builder.delete(builder.length() - 1, len);
+        for (int i = keys.length - 1; i >= 0; i--) {
+            String key = builder.toString().trim();
             List<QuoteDocument> docs = quoteRepo.findByKey(key);
             if (docs.size() > 0)
-                ans = docs;
+                return docs.stream().findFirst().get();
+
+            len = builder.length();
+            builder.delete(len - keys[i].length() - 1, len);
         }
-        return ans;
+        return null;
     }
 
     /**
      * @param word
-     * @return list document cause we implements two trie (wordTrie and quoteTrie). if we store document in same collection that can be duplicate key.
+     * @return list document because we implement two trie (wordTrie and quoteTrie). if we store document in same collection that can be duplicate key.
      * Two collection would be chosen, but in quote_collection still got be duplicate key.
-     * I didn't figure out yet.
+     * I didn't figure out the bug yet.
      */
     public List<Document> suggest(String word) {
         String keyWord = word.toLowerCase().trim();
         List<Document> suggests = new ArrayList<>();
         suggests.add(wordSuggest(keyWord));
-        suggests.addAll(quoteSuggest(keyWord));
+        suggests.add(quoteSuggest(keyWord));
 
         return suggests;
     }
