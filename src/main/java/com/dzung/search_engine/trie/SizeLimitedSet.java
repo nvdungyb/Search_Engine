@@ -1,4 +1,4 @@
-package dzung.trie.spell_checker.trie;
+package com.dzung.search_engine.trie;
 
 import lombok.Getter;
 

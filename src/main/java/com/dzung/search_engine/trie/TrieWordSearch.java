@@ -1,7 +1,7 @@
-package dzung.trie.spell_checker.trie;
+package com.dzung.search_engine.trie;
 
-import dzung.trie.spell_checker.controller.FilePath;
-import dzung.trie.spell_checker.document.Suggestion;
+import com.dzung.search_engine.controller.FilePath;
+import com.dzung.search_engine.document.Suggestion;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 

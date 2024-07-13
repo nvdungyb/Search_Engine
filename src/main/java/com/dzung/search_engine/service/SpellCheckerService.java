@@ -1,14 +1,14 @@
-package dzung.trie.spell_checker.service;
+package com.dzung.search_engine.service;
 
-import dzung.trie.spell_checker.document.Document;
-import dzung.trie.spell_checker.document.QuoteDocument;
-import dzung.trie.spell_checker.document.Suggestion;
-import dzung.trie.spell_checker.document.WordDocument;
-import dzung.trie.spell_checker.repository.QuoteRepository;
-import dzung.trie.spell_checker.repository.WordRepository;
-import dzung.trie.spell_checker.trie.TrieNode;
-import dzung.trie.spell_checker.trie.TrieQuoteSearch;
-import dzung.trie.spell_checker.trie.TrieWordSearch;
+import com.dzung.search_engine.document.Document;
+import com.dzung.search_engine.document.QuoteDocument;
+import com.dzung.search_engine.document.Suggestion;
+import com.dzung.search_engine.document.WordDocument;
+import com.dzung.search_engine.repository.QuoteRepository;
+import com.dzung.search_engine.repository.WordRepository;
+import com.dzung.search_engine.trie.TrieNode;
+import com.dzung.search_engine.trie.TrieQuoteSearch;
+import com.dzung.search_engine.trie.TrieWordSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -24,7 +24,6 @@ public class SpellCheckerService {
     private WordRepository wordRepo;
     @Autowired
     private QuoteRepository quoteRepo;
-
 
     public WordDocument wordSuggest(String word) {
         String[] keys = word.split("\\s+");
@@ -60,6 +59,9 @@ public class SpellCheckerService {
             if (docs.size() > 0)
                 return docs.stream().findFirst().get();
 
+            if (keys.length == 1) {
+                return null;
+            }
             len = builder.length();
             builder.delete(len - keys[i].length() - 1, len);
         }

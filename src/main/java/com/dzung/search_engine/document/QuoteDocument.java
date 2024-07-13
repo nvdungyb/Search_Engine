@@ -1,4 +1,4 @@
-package dzung.trie.spell_checker.document;
+package com.dzung.search_engine.document;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class QuoteDocument implements dzung.trie.spell_checker.document.Document {
+public class QuoteDocument implements Document {
     @Id
     private String id;
     private String key;

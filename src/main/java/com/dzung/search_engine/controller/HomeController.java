@@ -1,9 +1,9 @@
-package dzung.trie.spell_checker.controller;
+package com.dzung.search_engine.controller;
 
+import com.dzung.search_engine.document.Document;
+import com.dzung.search_engine.service.SpellCheckerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dzung.trie.spell_checker.document.Document;
-import dzung.trie.spell_checker.service.SpellCheckerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.print.Doc;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;

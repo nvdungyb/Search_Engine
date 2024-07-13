@@ -1,4 +1,4 @@
-package dzung.trie.spell_checker.document;
+package com.dzung.search_engine.document;
 
 public interface Document {
 }

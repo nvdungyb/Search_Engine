@@ -1,4 +1,4 @@
-package dzung.trie.spell_checker.controller;
+package com.dzung.search_engine.controller;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

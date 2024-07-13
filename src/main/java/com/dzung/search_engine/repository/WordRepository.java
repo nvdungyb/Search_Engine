@@ -1,6 +1,6 @@
-package dzung.trie.spell_checker.repository;
+package com.dzung.search_engine.repository;
 
-import dzung.trie.spell_checker.document.WordDocument;
+import com.dzung.search_engine.document.WordDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;

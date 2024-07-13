@@ -1,6 +1,6 @@
-package dzung.trie.spell_checker.trie;
+package com.dzung.search_engine.trie;
 
-import dzung.trie.spell_checker.document.Suggestion;
+import com.dzung.search_engine.document.Suggestion;
 import lombok.Data;
 
 import java.util.HashMap;
