@@ -11,6 +11,7 @@ import com.dzung.search_engine.trie.TrieQuoteSearch;
 import com.dzung.search_engine.trie.TrieWordSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,25 +26,20 @@ public class SpellCheckerService {
     @Autowired
     private QuoteRepository quoteRepo;
 
-    public WordDocument wordSuggest(String word) {
-        String[] keys = word.split("\\s+");
-        String key = keys[keys.length - 1];
+    public List<String> wordSuggest(Jedis conn, String word) {
+        String[] words = word.split("\\s+");
+        String keys = words[words.length - 1];
 
-        for (int i = key.length() - 1; i >= 0; i--) {
-            WordDocument doc = wordRepo.findByKey(key.substring(0, i + 1));
-            if (doc != null)
-                return doc;
+        for (int i = keys.length() - 1; i >= 0; i--) {
+            String key = keys.substring(0, i + 1);
+            List<String> ans = conn.zrange(key, 0, -1);
+            if (ans.size() > 0)
+                return ans;
         }
         return null;
     }
 
-    /**
-     * I don't know why quoteRepo return list of QuoteDocument, the quote_collection in mongodb contains duplicate keys.
-     *
-     * @param word
-     * @return a QuoteDocument
-     */
-    public QuoteDocument quoteSuggest(String word) {
+    public List<String> quoteSuggest(Jedis conn, String word) {
         String[] keys = word.split("\\s+");
 
         StringBuilder builder = new StringBuilder();
@@ -55,9 +51,9 @@ public class SpellCheckerService {
         builder.delete(builder.length() - 1, len);
         for (int i = keys.length - 1; i >= 0; i--) {
             String key = builder.toString().trim();
-            List<QuoteDocument> docs = quoteRepo.findByKey(key);
-            if (docs.size() > 0)
-                return docs.stream().findFirst().get();
+            List<String> ans = conn.zrange(key, 0, -1);
+            if (ans.size() > 0)
+                return ans;
 
             if (keys.length == 1) {
                 return null;
@@ -68,19 +64,13 @@ public class SpellCheckerService {
         return null;
     }
 
-    /**
-     * @param word
-     * @return list document because we implement two trie (wordTrie and quoteTrie). if we store document in same collection that can be duplicate key.
-     * Two collection would be chosen, but in quote_collection still got be duplicate key.
-     * I didn't figure out the bug yet.
-     */
-    public List<Document> suggest(String word) {
+    public List<String> suggest(Jedis conn, String word) {
         String keyWord = word.toLowerCase().trim();
-        List<Document> suggests = new ArrayList<>();
-        suggests.add(wordSuggest(keyWord));
-        suggests.add(quoteSuggest(keyWord));
+        List<String> suggests = new ArrayList<>();
+        suggests.addAll(wordSuggest(conn, word));
+        suggests.addAll(quoteSuggest(conn, word));
 
-        return suggests;
+        return conn.zrange(word, 0, -1);
     }
 
     public void saveWordSuggestions(String key, TrieNode curr) {
