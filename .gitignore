@@ -7,7 +7,8 @@ target/
 notes
 src/test
 src/main/resources/application.properties
-
+data.word_documents.json
+data.quote_documents.json
 
 ### STS ###
 .apt_generated
