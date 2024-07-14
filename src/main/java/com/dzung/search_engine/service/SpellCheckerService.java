@@ -34,7 +34,9 @@ public class SpellCheckerService {
             String key = keys.substring(0, i + 1);
             List<String> ans = conn.zrange(key, 0, -1);
             if (ans.size() > 0)
-                return ans;
+                return ans.parallelStream()
+                        .filter(str -> str.split("\\s+").length == 1)           // Just filter word.
+                        .collect(Collectors.toList());
         }
         return null;
     }
@@ -53,13 +55,14 @@ public class SpellCheckerService {
             String key = builder.toString().trim();
             List<String> ans = conn.zrange(key, 0, -1);
             if (ans.size() > 0)
-                return ans;
+                return ans.parallelStream()
+                        .filter(str -> str.split("\\s+").length > 1)            // Just filter quote.
+                        .collect(Collectors.toList());
 
-            if (keys.length == 1) {
-                return null;
-            }
             len = builder.length();
-            builder.delete(len - keys[i].length() - 1, len);
+            int keyslength = keys[i].length();
+            if (len > keyslength)
+                builder.delete(len - keyslength - 1, len);
         }
         return null;
     }
@@ -67,10 +70,15 @@ public class SpellCheckerService {
     public List<String> suggest(Jedis conn, String word) {
         String keyWord = word.toLowerCase().trim();
         List<String> suggests = new ArrayList<>();
-        suggests.addAll(wordSuggest(conn, word));
-        suggests.addAll(quoteSuggest(conn, word));
 
-        return conn.zrange(word, 0, -1);
+        List<String> wordSuggestions = wordSuggest(conn, word);
+        if (wordSuggestions != null)
+            suggests.addAll(wordSuggest(conn, word));
+        List<String> quoteSuggestions = quoteSuggest(conn, word);
+        if (quoteSuggestions != null)
+            suggests.addAll(quoteSuggest(conn, word));
+
+        return suggests;
     }
 
     public void saveWordSuggestions(String key, TrieNode curr) {
