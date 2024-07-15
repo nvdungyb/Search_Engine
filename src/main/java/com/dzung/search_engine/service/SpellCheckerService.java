@@ -38,7 +38,7 @@ public class SpellCheckerService {
                         .filter(str -> str.split("\\s+").length == 1)           // Just filter word.
                         .collect(Collectors.toList());
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public List<String> quoteSuggest(Jedis conn, String word) {
@@ -64,19 +64,15 @@ public class SpellCheckerService {
             if (len > keyslength)
                 builder.delete(len - keyslength - 1, len);
         }
-        return null;
+        return new ArrayList<>();
     }
 
     public List<String> suggest(Jedis conn, String word) {
         String keyWord = word.toLowerCase().trim();
         List<String> suggests = new ArrayList<>();
 
-        List<String> wordSuggestions = wordSuggest(conn, word);
-        if (wordSuggestions != null)
-            suggests.addAll(wordSuggest(conn, word));
-        List<String> quoteSuggestions = quoteSuggest(conn, word);
-        if (quoteSuggestions != null)
-            suggests.addAll(quoteSuggest(conn, word));
+        suggests.addAll(wordSuggest(conn, word));
+        suggests.addAll(quoteSuggest(conn, word));
 
         return suggests;
     }
