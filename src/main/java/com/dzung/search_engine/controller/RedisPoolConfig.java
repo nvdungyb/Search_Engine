@@ -7,7 +7,7 @@ import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
-public class RedisConfig {
+public class RedisPoolConfig {
     @Value("${redis_host}")
     private String redisHost;
     @Value("${redis_port}")

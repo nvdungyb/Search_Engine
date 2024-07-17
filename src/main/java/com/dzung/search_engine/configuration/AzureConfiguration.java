@@ -1,9 +1,9 @@
-package com.dzung.search_engine.controller;
+package com.dzung.search_engine.configuration;
 
 import org.springframework.beans.factory.annotation.Value;
 
 @org.springframework.context.annotation.Configuration
-public class Configuration {
+public class AzureConfiguration {
     @Value("${microsoft.azure}")
     private String azureKey;
 
