@@ -4,15 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Suggestion implements Comparable<Suggestion> {
-    private String suggestion;
+public class Suggestion implements Comparable<Suggestion>, Serializable {
+    private String completion;
     private int score;
 
     public Suggestion(String value) {
-        this.suggestion = value;
+        this.completion = value;
         this.score = 0;
     }
 
@@ -30,9 +32,9 @@ public class Suggestion implements Comparable<Suggestion> {
     public int compareTo(Suggestion o) {
         int cmpInt = Integer.compare(this.score, o.score);
         if (cmpInt == 0) {
-            int cmpLen = Integer.compare(this.suggestion.length(), o.suggestion.length());
+            int cmpLen = Integer.compare(this.completion.length(), o.completion.length());
             if (cmpLen == 0)
-                return -this.suggestion.compareTo(o.suggestion);
+                return -this.completion.compareTo(o.completion);
             return -cmpLen;
         }
         return -cmpInt;

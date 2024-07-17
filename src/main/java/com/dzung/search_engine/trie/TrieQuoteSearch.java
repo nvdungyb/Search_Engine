@@ -62,7 +62,7 @@ public class TrieQuoteSearch implements Trie {
     @Override
     public void findSuggestions(TrieNode currentNode, List<String> suggestions) {
         suggestions.addAll(currentNode.value.getSuggestions().stream()
-                .map(e -> e.getSuggestion())
+                .map(e -> e.getCompletion())
                 .collect(Collectors.toList())
         );
     }
