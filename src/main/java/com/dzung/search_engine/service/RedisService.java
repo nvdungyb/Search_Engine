@@ -42,6 +42,27 @@ public class RedisService {
         }
     }
 
+    public void updateByKey(Jedis conn, String key, String completion) {
+        if (conn.exists(key) && !conn.type(key).equals("zset"))
+            conn.del(key);
+
+        if (conn.zcard(key) >= maxCompletions / 2) {
+            if (conn.zscore(key, completion) != null) {
+                conn.zincrby(key, 1, completion);
+            } else {
+                List<Tuple> tuples = conn.zrangeWithScores(key, 0, 0);
+                for (Tuple tuple : tuples) {
+                    String minCompletion = tuple.getElement();
+                    int minScore = (int) tuple.getScore();
+                    conn.zrem(key, minCompletion);
+                    conn.zincrby(key, minScore + 1, completion);           // More information at notes: Guideline
+                }
+            }
+        } else {
+            conn.zincrby(key, 1, completion);
+        }
+    }
+
     public void updateWordScore(Jedis conn, String completion) {
         StringBuilder builder = new StringBuilder();
         String word = completion.toLowerCase();
@@ -49,24 +70,7 @@ public class RedisService {
             builder.append(word.charAt(i));
             String key = builder.toString();
 
-            if (conn.exists(key) && !conn.type(key).equals("zset"))
-                conn.del(key);
-
-            if (conn.zcard(key) >= maxCompletions / 2) {
-                if (conn.zscore(key, completion) != null) {
-                    conn.zincrby(key, 1, completion);
-                } else {
-                    List<Tuple> tuples = conn.zrangeWithScores(key, 0, 0);
-                    for (Tuple tuple : tuples) {
-                        String minCompletion = tuple.getElement();
-                        int minScore = (int) tuple.getScore();
-                        conn.zrem(key, minCompletion);
-                        conn.zincrby(key, minScore + 1, completion);           // More information at notes: Guideline
-                    }
-                }
-            } else {
-                conn.zincrby(key, 1, completion);
-            }
+            this.updateByKey(conn, key, completion);
         }
     }
 
@@ -78,24 +82,7 @@ public class RedisService {
             builder.append(words[i]).append(" ");
             String key = builder.toString().trim();
 
-            if (conn.exists(key) && !conn.type(key).equals("zset"))
-                conn.del(key);
-
-            if (conn.zcard(key) >= maxCompletions / 2) {
-                if (conn.zscore(key, completion) != null) {
-                    conn.zincrby(key, 1, completion);
-                } else {
-                    List<Tuple> tuples = conn.zrangeWithScores(key, 0, 0);
-                    for (Tuple tuple : tuples) {
-                        String minCompletion = tuple.getElement();
-                        int minScore = (int) tuple.getScore();
-                        conn.zrem(key, minCompletion);
-                        conn.zadd(key, minScore + 1, completion);
-                    }
-                }
-            } else {
-                conn.zadd(key, 1, completion);
-            }
+            this.updateByKey(conn, key, completion);
         }
     }
 
@@ -105,9 +92,9 @@ public class RedisService {
 
             String[] words = completion.split(" ");
             if (words.length == 1)
-                updateWordScore(conn, words[0]);
+                this.updateWordScore(conn, words[0]);
             else
-                updateQuoteScore(conn, completion);
+                this.updateQuoteScore(conn, completion);
         } catch (Exception e) {
         }
     }
