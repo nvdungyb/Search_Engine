@@ -1,6 +1,7 @@
 package com.dzung.search_engine.controller;
 
-import com.dzung.search_engine.document.Document;
+import com.dzung.search_engine.configuration.AzureConfiguration;
+import com.dzung.search_engine.service.RedisService;
 import com.dzung.search_engine.service.SpellCheckerService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,7 +24,9 @@ public class HomeController {
     @Autowired
     private SpellCheckerService spellCheckerService;
     @Autowired
-    private Configuration configuration;
+    private AzureConfiguration configuration;
+    @Autowired
+    private RedisService redisService;
 
     @GetMapping("")
     public String homePage() {
@@ -31,7 +34,7 @@ public class HomeController {
     }
 
     @GetMapping("/spellcheck")
-    public @ResponseBody List<Document> spellCheck(@RequestParam("word") String word) {
+    public @ResponseBody List<String> spellCheck(@RequestParam("word") String word) {
         return spellCheckerService.suggest(word);
     }
 
@@ -64,6 +67,10 @@ public class HomeController {
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode jsonNode = objectMapper.readTree(response.body());
             String translation = jsonNode.get(0).get("translations").get(0).get("text").asText();
+
+            // Update completion score after translating.
+            redisService.updateScore(message);
+
             return translation;
         } else {
             System.out.println("Error: " + response.statusCode());
