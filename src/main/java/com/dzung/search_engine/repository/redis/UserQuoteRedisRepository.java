@@ -5,5 +5,5 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import org.springframework.data.repository.CrudRepository;
 
 @EnableRedisRepositories(basePackages = "com.dzung.search_engine.repository.redis")
-public interface UserRedisRepository extends CrudRepository<QuoteDocHash, String> {
+public interface UserQuoteRedisRepository extends CrudRepository<QuoteDocHash, String> {
 }
