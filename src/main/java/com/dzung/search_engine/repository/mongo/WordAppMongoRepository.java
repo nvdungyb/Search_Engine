@@ -1,4 +1,4 @@
-package com.dzung.search_engine.repository;
+package com.dzung.search_engine.repository.mongo;
 
 import com.dzung.search_engine.document.WordDocument;
 import org.springframework.data.mongodb.repository.MongoRepository;

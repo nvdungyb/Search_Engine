@@ -1,17 +1,25 @@
 package com.dzung.search_engine.configuration;
 
+import com.dzung.search_engine.entity.redis.QuoteDocHash;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
+import org.springframework.context.event.EventListener;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisKeyExpiredEvent;
+import org.springframework.data.redis.core.RedisKeyValueAdapter;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.stereotype.Component;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
+@EnableRedisRepositories(enableKeyspaceEvents = RedisKeyValueAdapter.EnableKeyspaceEvents.ON_STARTUP)
+@Slf4j
 public class RedisConfiguration {
     @Value("${redis_host}")
     private String redisHost;
@@ -43,24 +51,34 @@ public class RedisConfiguration {
     }
 
     @Bean
-    public JedisConnectionFactory jedisConnectionFactory(JedisPoolConfig jedisPoolConfig) {
-        JedisConnectionFactory factory = new JedisConnectionFactory();
-//        factory.setHostName(redisHost);
-//        factory.setPort(redisPort);
-//        factory.setPassword(redisPassword);
-        factory.setUsePool(true);
-        factory.setPoolConfig(jedisPoolConfig);
-        return factory;
+    public LettuceConnectionFactory redisConnectionFactory() {
+        return new LettuceConnectionFactory();
     }
 
     @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();
         template.setConnectionFactory(redisConnectionFactory);
+
+        // Sử dụng StringRedisSerializer cho các key
         template.setKeySerializer(new StringRedisSerializer());
-        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         template.setHashKeySerializer(new StringRedisSerializer());
+
+        // Sử dụng GenericJackson2JsonRedisSerializer cho các value
+        template.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+
+        template.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
+
         return template;
+    }
+
+    @Component
+    public static class RedisHashExpiredEvenListener {
+        @EventListener
+        public void handleRedisKeyExpiredEvent(RedisKeyExpiredEvent<Object> event) {
+            QuoteDocHash docHash = (QuoteDocHash) event.getValue();
+            log.info("Object with key " + docHash.getKey() + " has expired!");
+        }
     }
 }
