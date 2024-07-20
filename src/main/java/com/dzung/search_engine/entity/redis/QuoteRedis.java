@@ -7,13 +7,11 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.redis.core.RedisHash;
 
-import java.util.List;
-
-@RedisHash(value = "user", timeToLive = 60)
-@AllArgsConstructor
+@RedisHash(value = "user")
 @NoArgsConstructor
+@AllArgsConstructor
 @Data
-public class QuoteDocHash {
+public class QuoteRedis {
     @Id
     private String key;                                 // Key = User identifier + prefix.
     private QuoteDocument quoteDocument;
