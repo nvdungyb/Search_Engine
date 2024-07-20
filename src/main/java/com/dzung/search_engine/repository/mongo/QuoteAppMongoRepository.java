@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface QuoteRepository extends MongoRepository<QuoteDocument, String> {
+public interface QuoteAppMongoRepository extends MongoRepository<QuoteDocument, String> {
     @Query("{'key': ?0}")
     List<QuoteDocument> findByKey(String substring);
 }

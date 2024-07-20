@@ -3,8 +3,9 @@ package com.dzung.search_engine.service;
 import com.dzung.search_engine.document.QuoteDocument;
 import com.dzung.search_engine.document.Suggestion;
 import com.dzung.search_engine.document.WordDocument;
-import com.dzung.search_engine.repository.QuoteRepository;
-import com.dzung.search_engine.repository.WordRepository;
+import com.dzung.search_engine.repository.mongo.QuoteAppMongoRepository;
+import com.dzung.search_engine.repository.mongo.WordAppMongoRepository;
+import com.dzung.search_engine.service.redis.RedisService;
 import com.dzung.search_engine.trie.TrieNode;
 import com.dzung.search_engine.trie.TrieQuoteSearch;
 import com.dzung.search_engine.trie.TrieWordSearch;
@@ -18,11 +19,15 @@ import java.util.stream.Collectors;
 @Service
 public class SpellCheckerService {
     @Autowired
-    private WordRepository wordRepo;
+    private WordAppMongoRepository wordRepo;
     @Autowired
-    private QuoteRepository quoteRepo;
+    private QuoteAppMongoRepository quoteRepo;
     @Autowired
     private RedisService redisService;
+    @Autowired
+    private TrieWordSearch trieWord;
+    @Autowired
+    private TrieQuoteSearch trieQuote;
 
     public List<String> wordSuggest(String word) {
         String[] words = word.split("\\s+");
@@ -113,7 +118,6 @@ public class SpellCheckerService {
     }
 
     public boolean saveDb() {
-//        return saveSuggestions(trieWord, trieQuote);
-        return true;
+        return saveSuggestions(trieWord, trieQuote);
     }
 }

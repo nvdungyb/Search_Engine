@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WordRepository extends MongoRepository<WordDocument, String> {
+public interface WordAppMongoRepository extends MongoRepository<WordDocument, String> {
     @Query("{'key' : ?0}")
     WordDocument findByKey(String key);
 }

@@ -1,6 +1,5 @@
-package com.dzung.search_engine.service;
+package com.dzung.search_engine.service.redis;
 
-import com.dzung.search_engine.document.Suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -19,9 +18,6 @@ public class RedisService {
     @Value("${max_completions}")
     private int maxCompletions;
 
-    @Value("${time_to_live}")
-    private int ttl;
-
     public List<String> getCompletions(String key) {
         try (Jedis conn = jedisPool.getResource()) {
             List<String> docs = conn.zrevrange(key, 0, -1);
@@ -30,16 +26,6 @@ public class RedisService {
         } catch (Exception e) {
         }
         return new ArrayList<>();
-    }
-
-    public void addToRedis(String key, List<Suggestion> suggestions) {
-        try (Jedis conn = jedisPool.getResource()) {
-            suggestions.forEach(val -> {
-                conn.zadd(key, val.getScore(), val.getCompletion());
-                conn.expire(key, ttl);
-            });
-        } catch (Exception e) {
-        }
     }
 
     public void updateByKey(Jedis conn, String key, String completion) {
