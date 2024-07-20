@@ -3,13 +3,12 @@ package com.dzung.search_engine.document;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @org.springframework.data.mongodb.core.mapping.Document(collection = "quote_documents")
-@NoArgsConstructor
 @AllArgsConstructor
 @Data
 public class QuoteDocument implements Document {
@@ -22,5 +21,11 @@ public class QuoteDocument implements Document {
     public QuoteDocument(String prefix, List<Suggestion> value) {
         this.prefix = prefix;
         this.value = value;
+    }
+
+    public QuoteDocument() {
+        this.id = "";
+        this.prefix = "";
+        this.value = new ArrayList<>();
     }
 }
