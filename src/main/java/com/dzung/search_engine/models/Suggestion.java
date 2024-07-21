@@ -1,4 +1,4 @@
-package com.dzung.search_engine.document;
+package com.dzung.search_engine.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

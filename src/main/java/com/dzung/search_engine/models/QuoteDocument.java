@@ -1,4 +1,4 @@
-package com.dzung.search_engine.document;
+package com.dzung.search_engine.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;

@@ -1,6 +1,6 @@
 package com.dzung.search_engine.trie;
 
-import com.dzung.search_engine.document.Suggestion;
+import com.dzung.search_engine.models.Suggestion;
 import lombok.Data;
 
 import java.util.HashMap;

@@ -1,7 +1,7 @@
 package com.dzung.search_engine.trie;
 
 import com.dzung.search_engine.controller.FilePath;
-import com.dzung.search_engine.document.Suggestion;
+import com.dzung.search_engine.models.Suggestion;
 import lombok.Getter;
 import org.springframework.stereotype.Component;
 
