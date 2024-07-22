@@ -14,4 +14,8 @@ public class Role {
     @Id
     private String id;
     private ERole name;
+
+    public Role(ERole eRole) {
+        this.name = eRole;
+    }
 }
