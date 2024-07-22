@@ -1,4 +1,4 @@
-package com.dzung.search_engine.dto;
+package com.dzung.search_engine.dto.request;
 
 import com.dzung.search_engine.entity.mongo.Role;
 import jakarta.validation.constraints.Email;

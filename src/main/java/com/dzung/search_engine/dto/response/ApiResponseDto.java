@@ -1,4 +1,4 @@
-package com.dzung.search_engine.dto;
+package com.dzung.search_engine.dto.response;
 
 import lombok.Builder;
 import lombok.Data;

@@ -1,4 +1,4 @@
-package com.dzung.search_engine.dto;
+package com.dzung.search_engine.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
