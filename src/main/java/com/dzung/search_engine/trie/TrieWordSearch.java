@@ -3,7 +3,6 @@ package com.dzung.search_engine.trie;
 import com.dzung.search_engine.controller.FilePath;
 import com.dzung.search_engine.models.Suggestion;
 import lombok.Getter;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -13,7 +12,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-@Component
 @Getter
 public class TrieWordSearch implements Trie {
     private TrieNode root;

@@ -1,5 +1,6 @@
 package com.dzung.search_engine.service;
 
+import com.dzung.search_engine.controller.FilePath;
 import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
 import com.dzung.search_engine.models.WordDocument;
@@ -17,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class SpellCheckerService {
+public class SearchService {
     @Autowired
     private WordAppMongoRepository wordRepo;
     @Autowired
@@ -25,9 +26,7 @@ public class SpellCheckerService {
     @Autowired
     private RedisService redisService;
     @Autowired
-    private TrieWordSearch trieWord;
-    @Autowired
-    private TrieQuoteSearch trieQuote;
+    private FilePath filePath;
 
     public List<String> wordSuggest(String word) {
         String[] words = word.split("\\s+");
@@ -118,6 +117,8 @@ public class SpellCheckerService {
     }
 
     public boolean saveDb() {
+        TrieWordSearch trieWord = new TrieWordSearch(filePath);
+        TrieQuoteSearch trieQuote = new TrieQuoteSearch(filePath);
         return saveSuggestions(trieWord, trieQuote);
     }
 }
