@@ -14,9 +14,14 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
     private UserRepository userRepo;
 
+    /**
+     * @param email the username identifying the user whose data is required.
+     * @return
+     * @throws UsernameNotFoundException
+     */
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepo.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        User user = userRepo.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found!"));
 
         return UserDetailsImpl.build(user);
     }
