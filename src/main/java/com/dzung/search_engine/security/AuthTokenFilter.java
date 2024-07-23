@@ -28,6 +28,21 @@ public class AuthTokenFilter extends OncePerRequestFilter {
         return null;
     }
 
+    /**
+     * Validate jwt token.
+     * If jwt is valid
+     * Get User from database -> build to UserDetailImpl
+     * Create authentication object (Which is authenticated)
+     * Set detail for this authentication object.
+     * Store this authentication into the SecurityContextHolder.
+     * Deleting this authentication in the SecurityContextHolder when the request finished.
+     *
+     * @param request
+     * @param response
+     * @param filterChain
+     * @throws ServletException
+     * @throws IOException
+     */
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         try {
