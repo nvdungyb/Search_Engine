@@ -1,8 +1,8 @@
 package com.dzung.search_engine.service;
 
-import com.dzung.search_engine.document.QuoteDocument;
-import com.dzung.search_engine.document.Suggestion;
-import com.dzung.search_engine.document.WordDocument;
+import com.dzung.search_engine.models.QuoteDocument;
+import com.dzung.search_engine.models.Suggestion;
+import com.dzung.search_engine.models.WordDocument;
 import com.dzung.search_engine.repository.mongo.QuoteAppMongoRepository;
 import com.dzung.search_engine.repository.mongo.WordAppMongoRepository;
 import com.dzung.search_engine.service.redis.RedisService;
