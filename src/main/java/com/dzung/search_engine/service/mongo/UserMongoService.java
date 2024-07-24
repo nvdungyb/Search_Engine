@@ -1,44 +1,36 @@
-package com.dzung.search_engine.service;
+package com.dzung.search_engine.service.mongo;
 
 import com.dzung.search_engine.controller.FilePath;
-import com.dzung.search_engine.document.QuoteDocument;
-import com.dzung.search_engine.document.Suggestion;
-import com.dzung.search_engine.entity.mongo.UserDoc;
-import com.dzung.search_engine.repository.mongo.UserMongoRepository;
-import com.dzung.search_engine.repository.redis.UseRedisRepository;
+import com.dzung.search_engine.entity.mongo.UserDetailsImpl;
+import com.dzung.search_engine.models.QuoteDocument;
+import com.dzung.search_engine.models.Suggestion;
+import com.dzung.search_engine.entity.mongo.QuoteMongo;
+import com.dzung.search_engine.repository.mongo.UserQuoteMongoRepository;
 import com.dzung.search_engine.trie.TrieNode;
 import com.dzung.search_engine.trie.TrieQuoteSearch;
-import com.dzung.search_engine.entity.redis.UserHash;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService {
+public class UserMongoService {
     @Autowired
-    private UseRedisRepository userRedisRepo;
-    @Autowired
-    private UserMongoRepository userMongoRepo;
+    private UserQuoteMongoRepository userMongoRepo;
 
-    public UserHash saveUser() {
-        UserHash user = new UserHash();
-        user.setKey("123");
-        QuoteDocument listQuotes;
-        listQuotes = (new QuoteDocument("he", List.of(new Suggestion("hello", 0), new Suggestion("hell", 0), new Suggestion("heat", 0))));
-        user.setQuoteDocument(listQuotes);
-
-        return userRedisRepo.save(user);
-    }
-
-    public UserHash getUserById(String id) {
-        return userRedisRepo.findById(id).get();
-    }
-
-    public void deleteUserById(String id) {
-        userRedisRepo.deleteById(id);
+    public Optional<QuoteMongo> findByPrefix(String prefix) {
+        Optional<QuoteMongo> optional = userMongoRepo.findByPrefix("DzungNv", prefix);
+        if (optional.isPresent())
+            return optional;
+        else {
+            List<Suggestion> suggestions = new ArrayList<>();
+            suggestions.add(new Suggestion(prefix));
+            return Optional.of(new QuoteMongo("userId", new QuoteDocument(prefix, suggestions)));
+        }
     }
 
     public void saveQuoteSuggestionsDB(String key, TrieNode curr, List<QuoteDocument> quoteDocuments) {
@@ -53,29 +45,27 @@ public class UserService {
         }
     }
 
-    public boolean saveUserDB(UserDoc user, TrieQuoteSearch quoteTrie) {
+    public boolean saveUserDB(String userId, TrieQuoteSearch quoteTrie) {
         try {
             List<QuoteDocument> quoteDocuments = new ArrayList<>();
             saveQuoteSuggestionsDB("", quoteTrie.getRoot(), quoteDocuments);
-            user.setQuoteDocuments(quoteDocuments);
-            userMongoRepo.save(user);
+
+            quoteDocuments.forEach(e -> userMongoRepo.save(new QuoteMongo(userId, e)));
         } catch (Exception e) {
             return false;
         }
         return true;
     }
 
-    public boolean createUser() {
+    public boolean insertUserData() {
+        UserDetailsImpl user = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String userId = user.getId();
+
         FilePath filePath = new FilePath();
         filePath.setQuotesPath("E:\\TrieApplication\\Search_Engine\\Search_Engine\\src\\main\\java\\com\\dzung\\search_engine\\trie\\divice_name.txt");
 
         TrieQuoteSearch trieQuoteSearch = new TrieQuoteSearch(filePath);
 
-        UserDoc user = new UserDoc();
-        user.setName("DungNv");
-        user.setEmail("dung@gmail.com");
-        this.saveUserDB(user, trieQuoteSearch);
-
-        return true;
+        return this.saveUserDB(userId, trieQuoteSearch);
     }
 }
