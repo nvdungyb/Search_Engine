@@ -1,10 +1,8 @@
 package com.dzung.search_engine.trie;
 
-import com.dzung.search_engine.controller.FilePath;
+import com.dzung.search_engine.configuration.FilePath;
 import com.dzung.search_engine.models.Suggestion;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
