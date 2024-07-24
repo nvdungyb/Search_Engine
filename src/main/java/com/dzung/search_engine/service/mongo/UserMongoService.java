@@ -22,14 +22,14 @@ public class UserMongoService {
     @Autowired
     private UserQuoteMongoRepository userMongoRepo;
 
-    public Optional<QuoteMongo> findByPrefix(String prefix) {
-        Optional<QuoteMongo> optional = userMongoRepo.findByPrefix("DzungNv", prefix);
+    public Optional<QuoteMongo> findByPrefix(String userId, String prefix) {
+        Optional<QuoteMongo> optional = userMongoRepo.findByPrefix(userId, prefix);
         if (optional.isPresent())
             return optional;
         else {
             List<Suggestion> suggestions = new ArrayList<>();
             suggestions.add(new Suggestion(prefix));
-            return Optional.of(new QuoteMongo("userId", new QuoteDocument(prefix, suggestions)));
+            return Optional.of(new QuoteMongo(userId, new QuoteDocument(prefix, suggestions)));
         }
     }
 
