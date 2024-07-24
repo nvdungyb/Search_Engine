@@ -22,7 +22,8 @@ public class UserSuggestionService {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getId();
 
-        Optional<QuoteRedis> optionalRedis = userRedisService.findByKey(userId, prefix);
+        String key = userId + ":" + prefix;
+        Optional<QuoteRedis> optionalRedis = userRedisService.findByKey(key);
         if (optionalRedis.isPresent()) {
             System.out.println("Retrieve data in Redis");
             return optionalRedis.get();

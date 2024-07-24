@@ -3,7 +3,6 @@ package com.dzung.search_engine.service.redis;
 import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
 import com.dzung.search_engine.entity.redis.QuoteRedis;
-import com.dzung.search_engine.repository.redis.UserQuoteRedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -19,15 +18,14 @@ public class UserRedisService {
     @Value("${time_to_live}")
     private long timeToLive;
     @Autowired
-    private UserQuoteRedisRepository userRedisRepo;
-    @Autowired
     private RedisTemplate<String, Object> template;
 
-    public Optional<QuoteRedis> findByKey(String userId, String prefix) {
+    public Optional<QuoteRedis> findByKey(String key) {
         QuoteRedis docHash = new QuoteRedis();
         QuoteDocument quoteDoc = new QuoteDocument();
-        String key = userId + ":" + prefix;
         docHash.setKey(key);
+
+        String prefix = key.split(":")[1];
         quoteDoc.setPrefix(prefix);
 
         try {

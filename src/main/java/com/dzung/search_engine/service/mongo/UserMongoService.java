@@ -1,6 +1,6 @@
 package com.dzung.search_engine.service.mongo;
 
-import com.dzung.search_engine.controller.FilePath;
+import com.dzung.search_engine.configuration.FilePath;
 import com.dzung.search_engine.entity.mongo.UserDetailsImpl;
 import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
