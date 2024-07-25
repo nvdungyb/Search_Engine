@@ -6,6 +6,7 @@ import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,7 @@ public class RedisService {
     }
 
     public void updateByKey(String key, String completion) {
-        if (template.hasKey(key) && !template.type(key).equals("zset"))
+        if (template.hasKey(key) && !template.type(key).equals(DataType.ZSET))
             template.delete(key);
 
         if (template.opsForZSet().zCard(key) >= maxCompletions / 2) {
