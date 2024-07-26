@@ -35,12 +35,10 @@ public class SearchService {
     private FilePath filePath;
 
     public List<String> quoteSuggestions(String prefix) {
-        Optional<List<String>> optionalRedis = redisService.findByKey(prefix);
+        Optional<List<String>> optionalRedis = redisService.findByKey("quote:" + prefix);
         if (optionalRedis.isPresent()) {
             System.out.println("Retrieve data in Redis");
-            return optionalRedis.get().stream()
-                    .filter(str -> str.split("\\s+").length > 1)
-                    .collect(Collectors.toList());
+            return optionalRedis.get();
         } else {
             System.out.println("Retrieve data in db");
             Optional<List<QuoteDocument>> optionalMongo = quoteRepo.findByKey(prefix);
@@ -69,12 +67,9 @@ public class SearchService {
         String[] keys = prefix.split("\\s+");
         String key = keys[keys.length - 1];
 
-        Optional<List<String>> optionalRedis = redisService.findByKey(key);
+        Optional<List<String>> optionalRedis = redisService.findByKey("word:" + key);
         if (optionalRedis.isPresent()) {
-            return optionalRedis.get().stream()
-                    .filter(str -> str.split("\\s+").length == 1)
-                    .limit(3)
-                    .collect(Collectors.toList());
+            return optionalRedis.get();
         } else {
             Optional<WordDocument> optionalMongo = wordRepo.findByKey(key);
             WordRedis wordHash;

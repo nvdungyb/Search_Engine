@@ -78,7 +78,7 @@ public class RedisService {
             builder.append(word.charAt(i));
             String key = builder.toString();
 
-            this.updateByKey(key, completion);
+            this.updateByKey("word:" + key, completion);
         }
     }
 
@@ -90,7 +90,7 @@ public class RedisService {
             builder.append(words[i]).append(" ");
             String key = builder.toString().trim();
 
-            this.updateByKey(key, completion);
+            this.updateByKey("quote:" + key, completion);
         }
     }
 
@@ -105,7 +105,7 @@ public class RedisService {
     }
 
     public void saveToRedis(QuoteRedis quoteHash) {
-        String key = quoteHash.getKey();
+        String key = "quote:" + quoteHash.getKey();
         for (Suggestion suggestion : quoteHash.getQuoteDocument().getValue()) {
             template.opsForZSet().add(key, suggestion.getCompletion(), suggestion.getScore());
         }
@@ -113,7 +113,7 @@ public class RedisService {
     }
 
     public void saveToRedis(WordRedis wordHash) {
-        String key = wordHash.getKey();
+        String key = "word:" + wordHash.getKey();
         for (Suggestion suggestion : wordHash.getWordDocument().getValue()) {
             template.opsForZSet().add(key, suggestion.getCompletion(), suggestion.getScore());
         }
