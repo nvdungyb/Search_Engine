@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class UserSuggestionService {
+public class UserSearchService {
     @Autowired
     private UserMongoService userMongoService;
     @Autowired
@@ -23,6 +23,7 @@ public class UserSuggestionService {
         String userId = userDetails.getId();
 
         String key = userId + ":" + prefix;
+        System.out.println(key);
         Optional<QuoteRedis> optionalRedis = userRedisService.findByKey(key);
         if (optionalRedis.isPresent()) {
             System.out.println("Retrieve data in Redis");
