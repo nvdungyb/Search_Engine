@@ -99,18 +99,20 @@ public class RedisService {
     }
 
     public void saveToRedis(QuoteRedis quoteHash) {
-        String key = "quote:" + quoteHash.getKey();
-        int prefixLen = quoteHash.getKey().length();
+        String prefix = quoteHash.getKey();
+        String key = "quote:" + prefix;
         for (Suggestion suggestion : quoteHash.getQuoteDocument().getValue()) {
+            int prefixLen = quoteHash.getQuoteDocument().getPrefix().length();
             String completion = suggestion.getCompletion();
             double score = suggestion.getScore();
             template.opsForZSet().add(key, completion, score);
 
-            while (prefixLen < completion.length()) {
-                String extraKey = "quote:" + completion.substring(0, prefixLen + 1).toLowerCase();
+            int cnt = 1;
+            while (prefixLen + cnt <= completion.length()) {
+                String extraKey = "quote:" + prefix + completion.substring(prefixLen, prefixLen + cnt).toLowerCase();           // Xử lý cho tất cả các users. prefix ngoài từ cần search có thể chứa cả userId, ngăn cách bởi :
                 template.opsForZSet().add(extraKey, completion, score);
                 expireKey(extraKey);
-                prefixLen += 1;
+                cnt += 1;
             }
         }
         expireKey(key);
