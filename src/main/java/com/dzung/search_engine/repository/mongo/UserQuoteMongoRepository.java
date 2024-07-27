@@ -9,6 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface UserQuoteMongoRepository extends MongoRepository<QuoteMongo, String> {
-    @Query("{'userId': ?0, 'quoteDocument.prefix': ?1}")
-    Optional<QuoteMongo> findByPrefix(String userId, String predix);
+    @Query("{'userId': ?0, 'quoteDocument.key': ?1}")
+    Optional<QuoteMongo> findByPrefix(String userId, String prefix);
 }
