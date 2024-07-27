@@ -1,6 +1,6 @@
 package com.dzung.search_engine.entity.redis;
 
-import com.dzung.search_engine.document.QuoteDocument;
+import com.dzung.search_engine.models.QuoteDocument;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
