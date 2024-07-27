@@ -14,7 +14,7 @@
 
 <div class="content">
     <div class="content-header">
-        <h2>Spell Checker</h2>
+        <h2>Application Search Engine</h2>
     </div>
     <div class="content-body">
         <label>Enter your word:</label>
@@ -34,7 +34,7 @@
 <script>
     let latestRequestTimestamp = 0;
     document.getElementById("word").addEventListener("input", function () {
-        const query = this.value.trim();
+        const query = this.value.replace(/\s+/g, " ");
         const contentDiv = document.getElementById("content-suggestions");
         contentDiv.innerHTML = "";
 
@@ -43,7 +43,7 @@
         const currentRequestTimestamp = Date.now();
         latestRequestTimestamp = currentRequestTimestamp;
 
-        fetch(`http://192.168.1.8:8080/spellcheck?word=${query}`)
+        fetch(`http://192.168.1.18:8080/suggestions?word=${query}`)
             .then((response) => response.json())
             .then((data) => {
                 if (latestRequestTimestamp !== currentRequestTimestamp) return;         // make sure the response is for the latest request.
@@ -69,7 +69,7 @@
             document.getElementById("answer").innerHTML = "Please enter your word!";
             return;
         }
-        fetch("http://192.168.1.8:8080/azure?message=" + query, {
+        fetch("http://192.168.1.18:8080/azure?message=" + query, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
