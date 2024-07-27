@@ -6,7 +6,6 @@ import com.dzung.search_engine.entity.redis.QuoteRedis;
 import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
 import com.dzung.search_engine.repository.mongo.UserQuoteMongoRepository;
-import com.dzung.search_engine.service.mongo.UserMongoService;
 import com.dzung.search_engine.service.redis.RedisService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -28,7 +27,7 @@ public class UserSearchService {
         UserDetailsImpl userDetails = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String userId = userDetails.getId();
 
-        String key = userId + ":" + prefix;
+        String key = userId + ":" + this.process(prefix);
         System.out.println(key);
         Optional<List<String>> optionalRedis = redisService.findByKey("quote:" + key);
         if (optionalRedis.isPresent()) {
@@ -53,5 +52,14 @@ public class UserSearchService {
                     .map(val -> val.getCompletion())
                     .collect(Collectors.toList());
         }
+    }
+
+    public String process(String message) {
+        StringBuilder builder = new StringBuilder();
+        String[] strings = message.trim().toLowerCase().split("\\s+");
+        for (String str : strings) {
+            builder.append(str).append(" ");
+        }
+        return builder.toString().trim();
     }
 }
