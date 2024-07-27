@@ -120,14 +120,15 @@ public class RedisService {
 
     public void saveToRedis(WordRedis wordHash) {
         String key = "word:" + wordHash.getKey();
-        int prefixLen = wordHash.getKey().length();
         for (Suggestion suggestion : wordHash.getWordDocument().getValue()) {
-            template.opsForZSet().add(key, suggestion.getCompletion(), suggestion.getScore());
-
+            int prefixLen = wordHash.getWordDocument().getKey().length();
             String completion = suggestion.getCompletion();
+            double score = suggestion.getScore();
+            template.opsForZSet().add(key, completion, score);
+
             while (prefixLen < completion.length()) {
                 String extraKey = "word:" + completion.substring(0, prefixLen + 1).toLowerCase();
-                template.opsForZSet().add(extraKey, completion, suggestion.getScore());
+                template.opsForZSet().add(extraKey, completion, score);
                 expireKey(extraKey);
                 prefixLen += 1;
             }
