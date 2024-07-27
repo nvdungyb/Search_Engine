@@ -82,9 +82,21 @@ public class RedisService {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < words.length; i++) {
             builder.append(words[i]).append(" ");
-            String key = builder.toString().trim();
+            String prefix = builder.toString().trim();
 
-            this.updateByKey("quote:" + key, completion);
+            this.updateByKey("quote:" + prefix, completion);
+        }
+    }
+
+    public void updateQuoteScore(String userId, String completion) {
+        String[] words = completion.toLowerCase().split(" ");
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < words.length; i++) {
+            builder.append(words[i]).append(" ");
+            String prefix = builder.toString().trim();
+
+            this.updateByKey("quote:" + userId + ":" + prefix, completion);
         }
     }
 
@@ -96,6 +108,12 @@ public class RedisService {
             this.updateWordScore(words[0]);
         else
             this.updateQuoteScore(completion);
+    }
+
+    public void updateScore(String userId, String message) {
+        String completion = message.trim().replace("\\s+", " ");
+
+        this.updateQuoteScore(userId, completion);
     }
 
     public void saveToRedis(QuoteRedis quoteHash) {
