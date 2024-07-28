@@ -78,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
 
             User savedUser = userService.save(user);
 
-            String dir = "E:\\TrieApplication\\Search_Engine\\Search_Engine\\user_data\\" + savedUser.getId();
+            String dir = "user_data/" + savedUser.getId();
             FileUploadUtil.saveFile(dir, srcFilePath);
         } catch (Exception e) {
             System.out.println("Can not save user data!");
