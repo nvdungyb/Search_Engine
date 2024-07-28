@@ -1,8 +1,9 @@
 package com.dzung.search_engine.service;
 
-import com.dzung.search_engine.dto.response.ApiResponseDto;
+import com.dzung.search_engine.FileUploadUtil;
 import com.dzung.search_engine.dto.request.SignInRequestDto;
 import com.dzung.search_engine.dto.request.SignUpRequestDto;
+import com.dzung.search_engine.dto.response.ApiResponseDto;
 import com.dzung.search_engine.dto.response.SignInResponseDto;
 import com.dzung.search_engine.entity.mongo.Role;
 import com.dzung.search_engine.entity.mongo.User;
@@ -68,12 +69,16 @@ public class AuthServiceImpl implements AuthService {
         if (userService.existsByEmail(signUpRequestDto.getEmail())) {
             throw new UserAlreadyExistsException("Registration failed: Provided email already exists!");
         }
-//        if (userService.existsByUserName(signUpRequestDto.getUsername())) {
-//            throw new UserAlreadyExistsException("Registration failed: Provide username already exists!");
-//        }
 
         User user = this.createUser(signUpRequestDto);
-        userService.save(user);
+        User savedUser = userService.save(user);
+        try {
+            String dir = "E:\\TrieApplication\\Search_Engine\\Search_Engine\\user_data\\" + savedUser.getId();
+            String filePath = signUpRequestDto.getFilePath();
+            FileUploadUtil.saveFile(dir, filePath);
+        } catch (Exception e) {
+            System.out.println("Can not save user data!");
+        }
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
