@@ -50,7 +50,7 @@ public class UserMongoService {
         String userId = user.getId();
 
         FilePath filePath = new FilePath();
-        String srcFile = "E:\\TrieApplication\\Search_Engine\\Search_Engine\\user_data\\" + user.getId() + "\\" + user.getFileName();
+        String srcFile = "user_data/" + user.getId() + "\\" + user.getFileName();
         filePath.setQuotesPath(srcFile);
 
         TrieQuoteSearch trieQuoteSearch = new TrieQuoteSearch(filePath);
