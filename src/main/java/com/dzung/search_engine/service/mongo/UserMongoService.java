@@ -1,10 +1,10 @@
 package com.dzung.search_engine.service.mongo;
 
 import com.dzung.search_engine.configuration.FilePath;
+import com.dzung.search_engine.entity.mongo.UserData;
 import com.dzung.search_engine.entity.mongo.UserDetailsImpl;
 import com.dzung.search_engine.models.QuoteDocument;
 import com.dzung.search_engine.models.Suggestion;
-import com.dzung.search_engine.entity.mongo.QuoteMongo;
 import com.dzung.search_engine.repository.mongo.UserQuoteMongoRepository;
 import com.dzung.search_engine.trie.TrieNode;
 import com.dzung.search_engine.trie.TrieQuoteSearch;
@@ -14,24 +14,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserMongoService {
     @Autowired
     private UserQuoteMongoRepository userMongoRepo;
-
-    public Optional<QuoteMongo> findByPrefix(String userId, String prefix) {
-        Optional<QuoteMongo> optional = userMongoRepo.findByPrefix(userId, prefix);
-        if (optional.isPresent())
-            return optional;
-        else {
-            List<Suggestion> suggestions = new ArrayList<>();
-            suggestions.add(new Suggestion(prefix));
-            return Optional.of(new QuoteMongo(userId, new QuoteDocument(prefix, suggestions)));
-        }
-    }
 
     public void saveQuoteSuggestionsDB(String key, TrieNode curr, List<QuoteDocument> quoteDocuments) {
         if (curr.value.getSuggestions().size() > 0) {
@@ -50,7 +38,7 @@ public class UserMongoService {
             List<QuoteDocument> quoteDocuments = new ArrayList<>();
             saveQuoteSuggestionsDB("", quoteTrie.getRoot(), quoteDocuments);
 
-            quoteDocuments.forEach(e -> userMongoRepo.save(new QuoteMongo(userId, e)));
+            quoteDocuments.forEach(e -> userMongoRepo.save(new UserData(userId, e)));
         } catch (Exception e) {
             return false;
         }
@@ -62,7 +50,8 @@ public class UserMongoService {
         String userId = user.getId();
 
         FilePath filePath = new FilePath();
-        filePath.setQuotesPath("E:\\TrieApplication\\Search_Engine\\Search_Engine\\src\\main\\java\\com\\dzung\\search_engine\\trie\\divice_name.txt");
+        String srcFile = "E:\\TrieApplication\\Search_Engine\\Search_Engine\\user_data\\" + user.getId() + "\\" + user.getFileName();
+        filePath.setQuotesPath(srcFile);
 
         TrieQuoteSearch trieQuoteSearch = new TrieQuoteSearch(filePath);
 
