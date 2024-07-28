@@ -24,6 +24,7 @@ public class UserDetailsImpl implements UserDetails {
 
     @JsonIgnore
     private String password;
+    private String fileName;
 
     private Collection<? extends GrantedAuthority> authorities;
     private boolean enabled;
@@ -33,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
                 .map(role -> new SimpleGrantedAuthority(role.getName().name())
                 ).collect(Collectors.toList());
 
-        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), authorities, user.isEnabled());
+        return new UserDetailsImpl(user.getId(), user.getUsername(), user.getEmail(), user.getPassword(), user.getFileName(), authorities, user.isEnabled());
     }
 
     @Override
