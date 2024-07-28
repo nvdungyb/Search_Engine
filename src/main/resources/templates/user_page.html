@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8"/>
     <title>UserPage</title>
@@ -13,9 +13,12 @@
     <b>Search Application</b>
 </div>
 
-<div class="content">
+<div class="content" th:object="${user}">
     <div class="content-header">
-        <h2>User Search Engine</h2>
+        <h2>
+            <span th:text="*{username}"></span>
+            Search Engine
+        </h2>
     </div>
     <div class="content-body">
         <label>Enter your word:</label>
@@ -44,7 +47,7 @@
         const currentRequestTimestamp = Date.now();
         latestRequestTimestamp = currentRequestTimestamp;
 
-        fetch(`http://192.168.1.18:8080/api/users/suggestions?prefix=${query}`)
+        fetch(`http://192.168.1.2:8080/api/users/suggestions?prefix=${query}`)
             .then((response) => response.json())
             .then((data) => {
                 if (latestRequestTimestamp !== currentRequestTimestamp) return;         // make sure the response is for the latest request.
@@ -70,7 +73,7 @@
             document.getElementById("answer").innerHTML = "Please enter your word!";
             return;
         }
-        fetch("http://192.168.1.18:8080/azure?message=" + query, {
+        fetch("http://192.168.1.2:8080/azure?message=" + query, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
