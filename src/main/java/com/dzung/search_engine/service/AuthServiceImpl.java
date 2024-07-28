@@ -23,6 +23,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -70,12 +71,15 @@ public class AuthServiceImpl implements AuthService {
             throw new UserAlreadyExistsException("Registration failed: Provided email already exists!");
         }
 
-        User user = this.createUser(signUpRequestDto);
-        User savedUser = userService.save(user);
         try {
+            User user = this.createUser(signUpRequestDto);
+            String srcFilePath = signUpRequestDto.getFilePath();
+            user.setFileName(Paths.get(srcFilePath).getFileName().toString());
+
+            User savedUser = userService.save(user);
+
             String dir = "E:\\TrieApplication\\Search_Engine\\Search_Engine\\user_data\\" + savedUser.getId();
-            String filePath = signUpRequestDto.getFilePath();
-            FileUploadUtil.saveFile(dir, filePath);
+            FileUploadUtil.saveFile(dir, srcFilePath);
         } catch (Exception e) {
             System.out.println("Can not save user data!");
         }

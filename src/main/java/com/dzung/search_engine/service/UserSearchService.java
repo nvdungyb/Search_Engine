@@ -1,6 +1,6 @@
 package com.dzung.search_engine.service;
 
-import com.dzung.search_engine.entity.mongo.QuoteMongo;
+import com.dzung.search_engine.entity.mongo.UserData;
 import com.dzung.search_engine.entity.mongo.UserDetailsImpl;
 import com.dzung.search_engine.entity.redis.QuoteRedis;
 import com.dzung.search_engine.models.QuoteDocument;
@@ -35,10 +35,10 @@ public class UserSearchService {
             return optionalRedis.get();
         } else {
             System.out.println("Retrieve data in db");
-            Optional<QuoteMongo> optionalMongo = quoteRepo.findByPrefix(userId, prefix);
+            Optional<UserData> optionalMongo = quoteRepo.findByPrefix(userId, prefix);
             QuoteRedis quoteHash;
             if (optionalMongo.isPresent()) {
-                QuoteMongo docMongo = optionalMongo.get();
+                UserData docMongo = optionalMongo.get();
                 quoteHash = new QuoteRedis(key, docMongo.getQuoteDocument());
             } else {
                 ArrayList<Suggestion> value = new ArrayList<>();

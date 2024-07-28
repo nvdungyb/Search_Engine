@@ -1,8 +1,6 @@
 package com.dzung.search_engine.service;
 
 import com.dzung.search_engine.configuration.FilePath;
-import com.dzung.search_engine.entity.mongo.QuoteMongo;
-import com.dzung.search_engine.entity.mongo.UserDetailsImpl;
 import com.dzung.search_engine.entity.redis.QuoteRedis;
 import com.dzung.search_engine.entity.redis.WordRedis;
 import com.dzung.search_engine.models.QuoteDocument;
@@ -15,7 +13,6 @@ import com.dzung.search_engine.trie.TrieNode;
 import com.dzung.search_engine.trie.TrieQuoteSearch;
 import com.dzung.search_engine.trie.TrieWordSearch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;

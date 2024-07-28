@@ -18,7 +18,7 @@ public class UserService {
         return userRepo.existsByUsername(username);
     }
 
-    public void save(User user) {
-        userRepo.save(user);
+    public User save(User user) {
+        return userRepo.save(user);
     }
 }
