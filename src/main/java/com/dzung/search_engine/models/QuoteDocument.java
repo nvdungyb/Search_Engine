@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,7 @@ public class QuoteDocument implements Document {
     @Id
     @JsonIgnore
     private String id;
+    @Field(name = "key")
     private String prefix;
     private List<Suggestion> value;
 

@@ -11,13 +11,13 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @NoArgsConstructor
 @Document(collection = "user_data")
 @Data
-public class QuoteMongo {
+public class UserData {
     @Id
     private String id;
     private String userId;
     private QuoteDocument quoteDocument;
 
-    public QuoteMongo(String userId, QuoteDocument quoteDocument) {
+    public UserData(String userId, QuoteDocument quoteDocument) {
         this.userId = userId;
         this.quoteDocument = quoteDocument;
     }
