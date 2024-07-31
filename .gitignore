@@ -1,7 +1,7 @@
 HELP.md
 target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
+#!.mvn/wrapper/maven-wrapper.jar
+#!**/src/main/**/target/
 !**/src/test/**/target/
 
 notes
@@ -9,6 +9,8 @@ src/test
 src/main/resources/application.properties
 data.word_documents.json
 data.quote_documents.json
+data.user_data.json
+Spring security with JWT.xmind
 
 ### STS ###
 .apt_generated
