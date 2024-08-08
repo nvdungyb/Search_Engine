@@ -3,6 +3,9 @@
     + Gợi ý tìm kiếm phải phản hồi nhanh.
     + Kết quả gợi ý phải liên quan tới từ khóa tìm kiếm.
 
+* Inputs:
+    + ~3000 từ
+    + ~75000 câu
 
 * Version 1: Sử dụng Trie
   - Test hiệu suất trong khi lưu dữ liệu vào MongoDB.
@@ -20,7 +23,7 @@
   - Lấy từ kết quả gợi ý từ database:
       +  ![image](https://github.com/user-attachments/assets/490c71a4-1360-4fa7-803c-5eadaac23310)
 
-  - Lấy kết quả tìm kiếm từ Trie
+  - Lấy kết quả gợi ý từ Trie
       + Dùng đệ quy:
         
           ![image](https://github.com/user-attachments/assets/20cddf28-96ba-4f8f-a6e0-ad1174de7669)
