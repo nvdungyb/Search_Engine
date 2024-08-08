@@ -22,6 +22,7 @@
 
   - Lấy kết quả tìm kiếm từ Trie
       + Dùng đệ quy:
+        
           ![image](https://github.com/user-attachments/assets/20cddf28-96ba-4f8f-a6e0-ad1174de7669)
 
       + Tối ưu:
